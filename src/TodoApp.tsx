@@ -1,15 +1,14 @@
-// TodoApp.tsx
 import React, { useState } from 'react';
 import useTodoStore from './useTodoStore';
 
 // Компонент TodoApp
 const TodoApp: React.FC = () => {
-    const { todos, addTodo, removeTodo, clearTodos } = useTodoStore();
+    const { todos, addTodo, removeTodo, clearTodos, toggleTodo } = useTodoStore();
     const [inputValue, setInputValue] = useState<string>('');
 
     const handleAddTodo = () => {
         if (inputValue.trim()) {
-            addTodo({ id: Date.now(), text: inputValue });
+            addTodo({ id: Date.now(), text: inputValue, completed: false }); // добавляем completed
             setInputValue('');
         }
     };
@@ -31,9 +30,15 @@ const TodoApp: React.FC = () => {
                 Очистить все
             </button>
             <ul style={{ listStyleType: 'none', padding: '0', marginTop: '20px' }}>
-                {todos.map((todo) => (
-                    <li key={todo.id} style={{ margin: '10px 0', display: 'flex', justifyContent: 'space-between' }}>
-                        <span>{todo.text}</span>
+                {todos.map((todo) => (<li key={todo.id} style={{ margin: '10px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <input 
+                            type="checkbox" 
+                            checked={todo.completed} 
+                            onChange={() => toggleTodo(todo.id)} // переключаем состояние при изменении
+                        />
+                        <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
+                            {todo.text}
+                        </span>
                         <button onClick={() => removeTodo(todo.id)} style={{ marginLeft: '10px' }}>
                             Удалить
                         </button>
